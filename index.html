@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>한가론에게 엽서 받기</title>
+<style>
+  body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:#FFF9F3;max-width:420px;margin:40px auto;padding:0 16px}
+  h1{color:#E87373} p{color:#666}
+  input,textarea{width:100%;border:none;border-radius:10px;padding:12px;margin:8px 0;box-shadow:0 0 6px rgba(0,0,0,.08);font-size:16px}
+  button{width:100%;background:#FFD6D6;border:none;border-radius:10px;padding:12px;font-size:16px;cursor:pointer}
+  button:hover{background:#FFC1C1} #ok{display:none;margin-top:16px;text-align:center}
+</style></head><body>
+<h1>한가론에게 엽서 받기</h1>
+<p>아래 세 가지를 입력해 주세요.</p>
+<form id="f">
+  <input id="name" placeholder="이름 또는 닉네임" required>
+  <input id="address" placeholder="주소" required>
+  <textarea id="message" rows="4" placeholder="받고 싶은 내용" required></textarea>
+  <button type="submit">신청하기</button>
+</form>
+<div id="ok">신청이 저장되었습니다.</div>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+  const supabase = createClient('https://nirhksugoncvhmmocqis.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pcmhrc3Vnb25jdmhtbW9jcWlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5MDI5NTEsImV4cCI6MjA3NjQ3ODk1MX0.aNhtQLnhY1w0Wt_6b9varOJ-KBbN7RHDdame7seC9CE') // 본인 값으로 교체
+  const f=document.getElementById('f')
+  f.addEventListener('submit', async (e)=>{
+    e.preventDefault()
+    const name=document.getElementById('name').value.trim()
+    const address=document.getElementById('address').value.trim()
+    const message=document.getElementById('message').value.trim()
+    if(!name||!address||!message) return
+    const { error } = await supabase.from('postcards').insert([{ name,address,message }])
+    if(error){ alert('저장 오류: '+error.message); return }
+    f.reset(); f.style.display='none'; document.getElementById('ok').style.display='block'
+  })
+</script>
+</body></html>
